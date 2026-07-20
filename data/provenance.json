@@ -1,0 +1,41 @@
+{
+  "source": "Arctic Shift archive (Reddit historical, no auth)",
+  "subreddits": [
+    "soccer",
+    "worldcup",
+    "football",
+    "USMNT",
+    "MLS",
+    "ussoccer",
+    "reddevils",
+    "Gunners",
+    "chelseafc",
+    "LiverpoolFC",
+    "coys",
+    "MCFC"
+  ],
+  "per_subreddit_comments": {
+    "soccer": 3500,
+    "worldcup": 2500,
+    "football": 3300,
+    "USMNT": 2000,
+    "MLS": 3900,
+    "ussoccer": 3600,
+    "reddevils": 3700,
+    "Gunners": 3900,
+    "chelseafc": 3900,
+    "LiverpoolFC": 3900,
+    "coys": 3700,
+    "MCFC": 3700
+  },
+  "window_utc": [
+    "2026-06-11",
+    "2026-07-20"
+  ],
+  "retrieved": "2026-07-20",
+  "comments": 40387,
+  "fans": 18445,
+  "communities": 12,
+  "reply_edges": 13930,
+  "note": "Reddit only; Bluesky live window not captured."
+}

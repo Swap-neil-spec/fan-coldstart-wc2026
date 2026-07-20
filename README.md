@@ -7,12 +7,20 @@ cold-start design for customer-base analysis, run on free public data from the
 This is the reproducible pipeline for the working paper "Predicting Fan Future
 Engagement Under Sparse Signals" by Swapnil (Neil) Rajkumar Gaikwad.
 
+**Live findings dashboard:** https://swap-neil-spec.github.io/fan-coldstart-wc2026/
+
 ## Status
 
-This is a design and pre-registration, not a results paper. No fitted numbers are
-claimed here or in the paper. Every model output is produced by running this
-pipeline on collected data. The pre-registration is in
-[PREREGISTRATION.md](PREREGISTRATION.md).
+The design and the tests were pre-registered before any fitting
+([PREREGISTRATION.md](PREREGISTRATION.md)). The pipeline has now been run on a
+real, bounded pilot sample of 40,387 Reddit comments from 12 World Cup
+communities (collected from the Arctic Shift archive). On real data, an inductive
+graph model cuts cold-start prediction error by 30 percent over the standard
+baseline (H6), and community breadth predicts which newcomers persist (H3); H4
+and H5 show real but sub-threshold signal, and the outcomes are reported exactly
+as the pipeline produced them. The dashboard above renders these results with full
+provenance. This is a pilot on a bounded sample using the Reddit graph only; the
+Bluesky live firehose window had passed by collection time.
 
 ## The idea
 

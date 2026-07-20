@@ -51,10 +51,18 @@ def fit(x, t_x, T, init=(1.0, 1.0, 1.0, 1.0), reg=1e-3):
     t_x = np.asarray(t_x, float)
     T = np.asarray(T, float)
 
+    # Soft box bounds keep the population parameters in a sane range on samples
+    # dominated by cold-start fans, where the dropout/rate spread is weakly
+    # identified and the raw MLE can collapse toward zero. This is a
+    # weakly-informative constraint for numerical stability, not a fit to the
+    # outcome: it does not enter the graph-based hypotheses (H3, H5, H6).
+    lo, hi = np.log(1e-2), np.log(1e3)
+
     def objective(log_params):
-        return _neg_log_likelihood(np.exp(log_params), x, t_x, T) + reg * float(
-            np.sum(log_params ** 2)
-        )
+        barrier = float(np.sum(np.maximum(0.0, log_params - hi) ** 2
+                               + np.maximum(0.0, lo - log_params) ** 2))
+        return (_neg_log_likelihood(np.exp(log_params), x, t_x, T)
+                + reg * float(np.sum(log_params ** 2)) + 1e3 * barrier)
 
     best, _ = minimize_nelder_mead(objective, np.log(np.asarray(init, float)))
     r, alpha, a, b = np.exp(best)

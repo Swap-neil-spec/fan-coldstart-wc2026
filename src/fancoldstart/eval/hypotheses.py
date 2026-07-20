@@ -96,6 +96,25 @@ def h5_beyond_activity(realized, base_pred, graph_pred_rewired):
                    "supported when the real lift does not reproduce on a rewired graph")
 
 
+def h5_structure_not_degree(realized_test, inductive_real, inductive_rewired):
+    """Load-bearing falsification of the H6 result. The same inductive model is
+    trained and evaluated on the real fan graph and on a degree-preserving
+    rewired graph (features recomputed on each). If the real graph predicts
+    cold-start fans better than the degree-matched random graph, the gain comes
+    from genuine structure, not from degree or activity. Supported when the real
+    graph's advantage over the rewired graph meets the effect-size floor and is
+    significant."""
+    ae_real = np.abs(inductive_real - realized_test)
+    ae_rw = np.abs(inductive_rewired - realized_test)
+    mae_real, mae_rw = _mae(inductive_real, realized_test), _mae(inductive_rewired, realized_test)
+    reduction = (mae_rw - mae_real) / mae_rw if mae_rw > 0 else 0.0
+    p, _ = wilcoxon_signed_rank(ae_rw - ae_real)
+    sesoi = reduction >= SESOI_MAE
+    return _result("H5", True, reduction, p, reduction, "real vs degree-matched MAE reduction",
+                   sesoi, sesoi and p < ALPHA,
+                   "supported when the real graph beats a degree-preserving rewired graph on cold-start fans")
+
+
 def h6_inductive_transfer(realized_test, inductive_pred, baseline_pred):
     ae_ind = np.abs(inductive_pred - realized_test)
     ae_base = np.abs(baseline_pred - realized_test)

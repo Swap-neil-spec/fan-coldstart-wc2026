@@ -1,0 +1,152 @@
+{
+  "provenance": {
+    "source": "Arctic Shift archive (Reddit historical, no auth)",
+    "subreddits": [
+      "soccer",
+      "worldcup",
+      "football",
+      "USMNT",
+      "MLS",
+      "ussoccer",
+      "reddevils",
+      "Gunners",
+      "chelseafc",
+      "LiverpoolFC",
+      "coys",
+      "MCFC"
+    ],
+    "per_subreddit_comments": {
+      "soccer": 3500,
+      "worldcup": 2500,
+      "football": 3300,
+      "USMNT": 2000,
+      "MLS": 3900,
+      "ussoccer": 3600,
+      "reddevils": 3700,
+      "Gunners": 3900,
+      "chelseafc": 3900,
+      "LiverpoolFC": 3900,
+      "coys": 3700,
+      "MCFC": 3700
+    },
+    "window_utc": [
+      "2026-06-11",
+      "2026-07-20"
+    ],
+    "retrieved": "2026-07-20",
+    "comments": 40387,
+    "fans": 18445,
+    "communities": 12,
+    "reply_edges": 13930,
+    "note": "Reddit only; Bluesky live window not captured."
+  },
+  "split": {
+    "cutoff_day": 24.0,
+    "tau_days": 15.0,
+    "window": "11 Jun to 19 Jul 2026"
+  },
+  "n_fans": 11988,
+  "n_cold": 9927,
+  "pct_cold": 82.8,
+  "freq_hist": [
+    7999,
+    1928,
+    756,
+    382,
+    245,
+    158,
+    520
+  ],
+  "communities": {
+    "r/soccer": 1878,
+    "r/worldcup": 1471,
+    "r/football": 2347,
+    "r/USMNT": 1352,
+    "r/MLS": 2348,
+    "r/ussoccer": 2029,
+    "r/reddevils": 2352,
+    "r/Gunners": 2369,
+    "r/chelseafc": 2315,
+    "r/LiverpoolFC": 2344,
+    "r/coys": 2181,
+    "r/MCFC": 2336
+  },
+  "bgnbd": {
+    "r": 0.0542,
+    "alpha": 0.0067,
+    "a": 1.136,
+    "b": 1.6429
+  },
+  "results": [
+    {
+      "name": "H1",
+      "primary": true,
+      "effect": -0.03862355234437725,
+      "effect_name": "holdout MAE reduction",
+      "p": 0.0,
+      "p_bh": 0.0,
+      "supported": false,
+      "note": ""
+    },
+    {
+      "name": "H2",
+      "primary": false,
+      "effect": -0.01232122188812601,
+      "effect_name": "graph x frequency interaction",
+      "p": 0.7370789016122488,
+      "p_bh": null,
+      "supported": false,
+      "note": "secondary; concentration of benefit in the cold-start stratum"
+    },
+    {
+      "name": "H3",
+      "primary": true,
+      "effect": 0.12408369635993051,
+      "effect_name": "standardized logit coefficient",
+      "p": 1.2449554776523185e-09,
+      "p_bh": 2.0749257960871974e-09,
+      "supported": true,
+      "note": ""
+    },
+    {
+      "name": "H4",
+      "primary": true,
+      "effect": 0.0591404549688598,
+      "effect_name": "standardized NB2 coefficient",
+      "p": 0.018785473663783397,
+      "p_bh": 0.018785473663783397,
+      "supported": false,
+      "note": ""
+    },
+    {
+      "name": "H5",
+      "primary": true,
+      "effect": 0.018514465841073587,
+      "effect_name": "real vs degree-matched MAE reduction",
+      "p": 0.012227097500504198,
+      "p_bh": 0.015283871875630248,
+      "supported": false,
+      "note": "supported when the real graph beats a degree-preserving rewired graph on cold-start fans"
+    },
+    {
+      "name": "H6",
+      "primary": true,
+      "effect": 0.30289650422433284,
+      "effect_name": "holdout MAE reduction vs population average",
+      "p": 1.1000774246499505e-264,
+      "p_bh": 2.750193561624876e-264,
+      "supported": true,
+      "note": ""
+    },
+    {
+      "name": "H7",
+      "primary": false,
+      "effect": 0.0,
+      "effect_name": "cross-platform replication",
+      "p": 1.0,
+      "p_bh": null,
+      "supported": false,
+      "note": "secondary; not evaluated in this run (no second corpus supplied)"
+    }
+  ]
+}
