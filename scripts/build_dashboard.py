@@ -178,12 +178,41 @@ def _finding(r):
             '</div></article>')
 
 
+def _card(head, value, desc, meta, pulse, tone):
+    return (f'<article class="card pulse {pulse}"><div class="card-body">'
+            f'<div class="finding-top"><span class="finding-h">{esc(head)}</span></div>'
+            f'<div class="finding-v {("st-"+tone) if tone else ""}">{value}</div>'
+            f'<div class="finding-d">{esc(desc)}</div>'
+            f'<div class="finding-m">{esc(meta)}</div></div></article>')
+
+
+def _mae_bars(values, labels):
+    mx = max(values) or 1
+    n = len(values)
+    W, H, padB = 640, 190, 26
+    bw = W / n
+    out = [f'<line x1="0" y1="{H-padB}" x2="{W}" y2="{H-padB}" class="axis"/>']
+    for i, v in enumerate(values):
+        h = (H - padB - 16) * (v / mx)
+        x = i * bw + bw * 0.16
+        w = bw * 0.68
+        y = H - padB - h
+        col = "var(--accent)" if i >= 2 else "var(--txt3)"
+        out.append(f'<g><title>{esc(labels[i])}: MAE {v:.3f}</title>'
+                   f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{max(h,1):.1f}" rx="2" fill="{col}"/>'
+                   f'<text x="{x+w/2:.1f}" y="{y-4:.1f}" class="ax" text-anchor="middle">{v:.3f}</text>'
+                   f'<text x="{x+w/2:.1f}" y="{H-padB+15:.0f}" class="ax" text-anchor="middle">{esc(labels[i])}</text></g>')
+    return f'<svg viewBox="0 0 {W} {H}" class="chart" preserveAspectRatio="none" role="img">{"".join(out)}</svg>'
+
+
 def build():
     real_path = ROOT / "data" / "real_results.json"
     if not real_path.exists():
         print("no data/real_results.json; run scripts/run_real.py first.")
         return
     R = json.loads(real_path.read_text(encoding="utf-8"))
+    ra_path = ROOT / "data" / "reanalysis.json"
+    RA = json.loads(ra_path.read_text(encoding="utf-8")) if ra_path.exists() else None
     prov = R["provenance"]
     res = {r["name"]: r for r in R["results"]}
     supported = [n for n in ["H1", "H3", "H4", "H5", "H6"] if res[n]["supported"]]
@@ -239,8 +268,9 @@ def build():
         '<div class="pagehead" id="findings"><div class="kick">Predicting fan lifetime value from social graphs and engagement</div>'
         '<h1>Spotting the superfans before they have a history.</h1>'
         '<p class="sub">The valuable fans are the durable ones, and at a World Cup most arrive as newcomers with '
-        'almost no track record. This study predicts which of them keep showing up, from where they sit in the public '
-        'social graph, fit on real Reddit data from the 2026 tournament.</p></div>'
+        'almost no track record. Fit on real Reddit data from the 2026 tournament, breadth of community participation '
+        'predicts which of them keep showing up, within community and net of activity. The graph adds a small, honest '
+        'amount beyond a fan\'s own activity; the full decomposition is below.</p></div>'
     )
     # stat readout
     M.append(
@@ -249,12 +279,38 @@ def build():
         + _stat("unique fans", f'{prov["fans"]:,}')
         + _stat("communities", str(prov["communities"]))
         + _stat("cold-start", f'{pct_cold:.0f}%')
-        + _stat("cold-start lift", f'+{res["H6"]["effect"]*100:.0f}%', "vs baseline (H6)", "ok")
+        + _stat("breadth effect", f'+{RA["h3_within_coef"]:.2f}' if RA else "n/a", "within community (H3)", "ok")
         + _stat("primary supported", f'{len(supported)} / 5', "pre-registered")
         + '</div></div>'
     )
-    # findings cards
-    M.append(f'<div class="grid3">{findings}</div>')
+    # findings cards, honestly decomposed
+    if RA:
+        c1 = _card("H3 · holds", f'+{RA["h3_within_coef"]:.2f}',
+                   "Community breadth predicts persistence",
+                   "within community and net of activity; standardized logit coefficient, p < 1e-17",
+                   "pulse-ok", "ok")
+        c2 = _card("H6 · decomposed", f'+{RA["h6_lift_vs_activity_degree"]*100:.1f}%',
+                   "Graph beyond activity and degree",
+                   f'the raw +{RA["h6_lift_vs_global"]*100:.0f}% over a global mean is mostly a fan\'s own activity and community',
+                   "pulse-idle", "")
+        c3 = _card("H5 · below floor", f'+{RA["h5_rewire_mean"]*100:.1f}%',
+                   "Real graph vs a degree-matched graph",
+                   "beats the rewired graph in 60 of 60 draws, but stays under the pre-registered 5% floor",
+                   "pulse-warn", "warn")
+        M.append(f'<div class="grid3">{c1}{c2}{c3}</div>')
+        mae = RA["h6_mae"]
+        chart = _mae_bars([mae["global"], mae["community"], mae["activity_degree"], mae["inductive"]],
+                          ["global", "community", "act + degree", "graph"])
+        M.append(
+            '<section class="card"><div class="card-body"><div class="sect">Where the lift comes from</div>'
+            '<p class="lead">The graph model beats a global mean by 30 percent, but almost all of that is a fan\'s own '
+            'activity and community. Against an activity-and-degree baseline, the graph adds about one percent.</p>'
+            f'{chart}<p class="cap">Holdout mean absolute error on cold-start fans, lower is better; each bar is a '
+            'progressively fairer baseline. The honest, network-specific contribution is the last gap, not the first. '
+            '<span class="src">Re-analysis on the real pilot data.</span></p></div></section>'
+        )
+    else:
+        M.append(f'<div class="grid3">{findings}</div>')
 
     # the cold start
     M.append(
@@ -286,10 +342,11 @@ def build():
         f'at FDR 0.05, a smallest effect size of interest per primary hypothesis. Supported: {", ".join(supported) if supported else "none"}.</p>'
         '<div class="tablewrap"><table><thead><tr><th></th><th>Hypothesis</th><th class="num">effect</th>'
         '<th class="num">p</th><th class="num">p(BH)</th><th>result</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
-        '<p class="cap" style="margin-top:12px">H4 and H5 clear significance but fall below their pre-registered '
-        'effect-size floors, so they do not count: the network signal is real but modest. H1, the naive '
-        'graph-smoothed baseline, does not beat the per-fan baseline; the inductive model, H6, is where the graph '
-        'pays off.</p></div></section>'
+        '<p class="cap" style="margin-top:12px">H6 passed its registered test against a population-average baseline, '
+        'but a fairer baseline that already knows a fan\'s activity and degree cuts the graph\'s contribution to about '
+        'one percent (see the decomposition above). H4 and H5 clear significance but stay below their pre-registered '
+        'floors, so the network-specific signal is real but modest. The result that holds is H3, breadth predicting '
+        'persistence within community. H1 does not beat the per-fan baseline.</p></div></section>'
     )
 
     # provenance + verified facts
