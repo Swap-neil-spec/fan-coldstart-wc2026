@@ -37,4 +37,4 @@ bluesky:
 
 wikidata:
   # Structural spine: match results, venues, attendance (CC0).
-  tournament_qid: Q108671319    # 2026 FIFA World Cup; verify property paths before relying
+  tournament_qid: Q5020214    # 2026 FIFA World Cup; verify property paths before relying

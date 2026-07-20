@@ -7,7 +7,7 @@ cold-start design for customer-base analysis, run on free public data from the
 This is the reproducible pipeline for the working paper "Predicting Fan Future
 Engagement Under Sparse Signals" by Swapnil (Neil) Rajkumar Gaikwad.
 
-**Live findings dashboard:** https://swap-neil-spec.github.io/fan-coldstart-wc2026/
+**Live findings dashboard:** https://fanvalue-coldstart-2026.netlify.app (Netlify; the study's real data is served from a Netlify Blobs store via `/api/data`). Static mirror on GitHub Pages: https://swap-neil-spec.github.io/fan-coldstart-wc2026/
 
 ## Status
 

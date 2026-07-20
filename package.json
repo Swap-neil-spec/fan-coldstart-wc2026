@@ -1,0 +1,9 @@
+{
+  "name": "fan-coldstart-wc2026-site",
+  "private": true,
+  "type": "module",
+  "description": "Netlify site + Blobs data backend for the fan cold-start study dashboard",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

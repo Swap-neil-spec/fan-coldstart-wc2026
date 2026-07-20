@@ -26,3 +26,9 @@ data/
 .idea/
 .vscode/
 *.swp
+
+# Local Netlify folder
+.netlify
+
+# Node
+node_modules/

@@ -1,0 +1,9 @@
+# Netlify site config. Static dashboard is prebuilt into docs/ by
+# scripts/build_dashboard.py; the study's real data lives in Netlify Blobs and is
+# served by the data function, so the dashboard reads from the Blobs store.
+[build]
+  publish = "docs"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
