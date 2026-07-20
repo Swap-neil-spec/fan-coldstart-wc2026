@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fancoldstart"
+version = "0.1.0"
+description = "Pre-registered cold-start design for predicting fan future engagement from social-graph structure"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Swapnil (Neil) Rajkumar Gaikwad" }]
+dependencies = ["numpy>=1.24", "networkx>=3.0"]
+
+[project.optional-dependencies]
+collect = ["requests>=2.28", "praw>=7.7", "websockets>=12.0", "pyyaml>=6.0"]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+fancoldstart = "fancoldstart.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

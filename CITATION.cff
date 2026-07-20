@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software or its design, please cite it as below."
+title: "fan-coldstart-wc2026: a pre-registered cold-start design for fan future-engagement prediction"
+authors:
+  - family-names: "Rajkumar Gaikwad"
+    given-names: "Swapnil (Neil)"
+version: 0.1.0
+date-released: 2026-07-20
+license: MIT
+repository-code: "https://github.com/Swap-neil-spec/fan-coldstart-wc2026"
+keywords:
+  - customer-base analysis
+  - cold start
+  - pre-registration
+  - social graph
+  - BG/NBD
+  - fan engagement
+  - FIFA World Cup 2026

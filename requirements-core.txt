@@ -1,0 +1,7 @@
+# Minimal stack to run the pipeline, the synthetic validation, and the tests.
+# The core deliberately avoids scipy and statsmodels; the special functions,
+# optimizer, and GLMs are implemented on numpy so the science is reproducible
+# with a small, wheel-only dependency set.
+numpy>=1.24
+networkx>=3.0
+pytest>=7.0

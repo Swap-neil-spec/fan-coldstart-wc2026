@@ -1,0 +1,40 @@
+# Collection configuration for a real run. Times are days from origin_epoch.
+# The tournament window is 11 June to 19 July 2026.
+
+origin_epoch: 1749600000        # 2026-06-11 00:00 UTC, the opening match day
+calibration_days: 28            # calibration window length in days
+horizon_days: 20                # tau, the future-engagement horizon
+
+cold_start:
+  threshold_events: 1           # cold-start stratum: at most this many prior events
+
+graph:
+  max_community_size: 50000     # skip projection for communities larger than this
+  max_pairs_per_community: 6000 # sample this many co-participation pairs when a
+                                # community exceeds it (seeded, reproducible)
+
+model:
+  gamma: 0.3                    # graph-smoothing strength (tuned by temporal CV on real data)
+
+reddit:
+  # Formal fan graph. Requires approved non-commercial Data API access.
+  subreddits:
+    - soccer
+    - worldcup
+    - football
+    - USMNT
+    - MLS
+
+bluesky:
+  # Complementary live posts and follow graph. Free Jetstream firehose.
+  keywords:
+    - world cup
+    - worldcup
+    - fifa
+    - "#wc2026"
+    - football
+    - soccer
+
+wikidata:
+  # Structural spine: match results, venues, attendance (CC0).
+  tournament_qid: Q108671319    # 2026 FIFA World Cup; verify property paths before relying

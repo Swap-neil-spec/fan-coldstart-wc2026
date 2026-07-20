@@ -1,0 +1,12 @@
+# Full stack for live data collection and optional acceleration.
+# The core pipeline and tests need only requirements-core.txt.
+numpy>=1.24
+networkx>=3.0
+pytest>=7.0
+requests>=2.28        # Wikidata SPARQL, Arctic Shift
+praw>=7.7             # live Reddit Data API collection
+websockets>=12.0      # Bluesky Jetstream firehose
+pyyaml>=6.0           # config
+# Optional accelerators (the core does not require them):
+# scipy>=1.11
+# statsmodels>=0.14

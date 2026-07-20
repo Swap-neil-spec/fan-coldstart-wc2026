@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data: never commit collected third-party data (see DATA_LICENSES.md)
+data/
+*.parquet
+*.jsonl
+*.csv
+!tests/**/*.csv
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
