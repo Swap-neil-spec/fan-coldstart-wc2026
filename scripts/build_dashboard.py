@@ -419,11 +419,7 @@ PREPAINT = ("(function(){try{var t=localStorage.getItem('titan_theme');"
 JS = ("(function(){var b=document.getElementById('tt');if(b)b.addEventListener('click',function(){"
       "var r=document.documentElement,d=r.getAttribute('data-theme')==='dark';"
       "if(d)r.removeAttribute('data-theme');else r.setAttribute('data-theme','dark');"
-      "try{localStorage.setItem('titan_theme',d?'light':'dark');}catch(e){}});"
-      "fetch('/api/data').then(function(r){return r.ok?r.json():null;}).then(function(j){"
-      "if(j&&j.ok){var c=document.getElementById('live-chip');"
-      "if(c){c.innerHTML='<span class=\\\"dot\\\"></span>live \\u00b7 Netlify Blobs';"
-      "c.title='served from Netlify Blobs at '+j.servedAt;}}}).catch(function(){});})();")
+      "try{localStorage.setItem('titan_theme',d?'light':'dark');}catch(e){}});})();")
 
 CSS = """
 :root{color-scheme:light;
