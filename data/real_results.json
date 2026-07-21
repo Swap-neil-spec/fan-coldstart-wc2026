@@ -81,7 +81,7 @@
     {
       "name": "H1",
       "primary": true,
-      "effect": -0.03862355234437725,
+      "effect": -0.03227012536573058,
       "effect_name": "holdout MAE reduction",
       "p": 0.0,
       "p_bh": 0.0,
@@ -91,9 +91,9 @@
     {
       "name": "H2",
       "primary": false,
-      "effect": -0.01232122188812601,
+      "effect": -0.012499689753514787,
       "effect_name": "graph x frequency interaction",
-      "p": 0.7370789016122488,
+      "p": 0.733538695554542,
       "p_bh": null,
       "supported": false,
       "note": "secondary; concentration of benefit in the cold-start stratum"

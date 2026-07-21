@@ -44,8 +44,12 @@ def fit_predict(G, fan_ids, x, t_x, T, params, tau, gamma=0.5, c0=1.0,
     index = {f: i for i, f in enumerate(fan_ids)}
 
     r, alpha = params["r"], params["alpha"]
-    theta_data = np.log((r + x) / (alpha + T))  # gamma-posterior mean log-rate
-    c = x + c0                                   # own-data confidence
+    theta_data = np.log((r + x) / (alpha + T))   # gamma-posterior mean log-rate
+    palive_data = bgnbd.prob_alive(params, x, t_x, T)
+    eps = 1e-6
+    phi_data = np.log(np.clip(palive_data, eps, 1 - eps)                  # logit alive-probability
+                      / (1 - np.clip(palive_data, eps, 1 - eps)))
+    c = x + c0                                    # own-data confidence
 
     rows, cols, wts = [], [], []
     for u, v, d in G.edges(data=True):
@@ -63,19 +67,24 @@ def fit_predict(G, fan_ids, x, t_x, T, params, tau, gamma=0.5, c0=1.0,
     has_nbr = deg > 0
     eff_gamma = np.where(has_nbr, gamma, 0.0)
     denom = c + eff_gamma
-    theta = theta_data.copy()
-    for _ in range(max_iter):
-        if len(rows):
-            nb_sum = np.bincount(rows, weights=wts * theta[cols], minlength=n)
-            nb_avg = np.where(has_nbr, nb_sum / np.where(has_nbr, deg, 1.0), 0.0)
-        else:
-            nb_avg = np.zeros(n)
-        new_theta = (c * theta_data + eff_gamma * nb_avg) / denom
-        if np.max(np.abs(new_theta - theta)) < tol:
-            theta = new_theta
-            break
-        theta = new_theta
 
-    rate = np.exp(theta)
-    palive = bgnbd.prob_alive(params, x, t_x, T)
+    def _smooth(signal):
+        s = signal.copy()
+        for _ in range(max_iter):
+            if len(rows):
+                nb_sum = np.bincount(rows, weights=wts * s[cols], minlength=n)
+                nb_avg = np.where(has_nbr, nb_sum / np.where(has_nbr, deg, 1.0), 0.0)
+            else:
+                nb_avg = np.zeros(n)
+            new = (c * signal + eff_gamma * nb_avg) / denom
+            if np.max(np.abs(new - s)) < tol:
+                return new
+            s = new
+        return s
+
+    # smooth BOTH the frequency side (log-rate) and the attrition side (logit
+    # alive-probability), so a thin fan borrows a neighbourhood-structured prior
+    # for whether they will churn, not only for how often they act.
+    rate = np.exp(_smooth(theta_data))
+    palive = 1.0 / (1.0 + np.exp(-_smooth(phi_data)))
     return rate * tau * palive
